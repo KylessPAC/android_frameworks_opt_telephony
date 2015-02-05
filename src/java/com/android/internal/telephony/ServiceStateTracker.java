@@ -150,7 +150,7 @@ public abstract class ServiceStateTracker extends Handler {
     protected static final int EVENT_GET_SIGNAL_STRENGTH_CDMA          = 29;
     protected static final int EVENT_NETWORK_STATE_CHANGED_CDMA        = 30;
     protected static final int EVENT_GET_LOC_DONE_CDMA                 = 31;
-    //protected static final int EVENT_UNUSED                            = 32;
+    protected static final int EVENT_SIGNAL_STRENGTH_UPDATE_CDMA       = 32;
     protected static final int EVENT_NV_LOADED                         = 33;
     protected static final int EVENT_POLL_STATE_CDMA_SUBSCRIPTION      = 34;
     protected static final int EVENT_NV_READY                          = 35;
@@ -160,9 +160,14 @@ public abstract class ServiceStateTracker extends Handler {
     protected static final int EVENT_CDMA_SUBSCRIPTION_SOURCE_CHANGED  = 39;
     protected static final int EVENT_CDMA_PRL_VERSION_CHANGED          = 40;
     protected static final int EVENT_RADIO_ON                          = 41;
-    public static final int EVENT_ICC_CHANGED                          = 42;
-    protected static final int EVENT_GET_CELL_INFO_LIST                = 43;
-    protected static final int EVENT_UNSOL_CELL_INFO_LIST              = 44;
+    public static final int    EVENT_ICC_CHANGED                       = 42;
+    protected static final int EVENT_ICC_RECORD_EVENTS                 = 43;
+    protected static final int EVENT_GET_CELL_INFO_LIST                = 45;//NOT USED
+    protected static final int EVENT_UNSOL_CELL_INFO_LIST              = 44;//NOT USED
+    protected static final int EVENT_SUBSCRIPTION_READY = 46;
+    protected static final int EVENT_LU_REJECT_CAUSE = 51;
+    protected static final int EVENT_CHECK_MULTI_TIME_ZONE = 52;
+
 
     protected static final String TIMEZONE_PROPERTY = "persist.sys.timezone";
 
