@@ -58,6 +58,8 @@ import android.telephony.SmsMessage;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import android.telephony.SignalStrength;
+
 import com.android.internal.telephony.gsm.SmsBroadcastConfigInfo;
 import com.android.internal.telephony.gsm.SsData;
 import com.android.internal.telephony.gsm.SuppServiceNotification;
@@ -2648,7 +2650,6 @@ class RILReceiver implements Runnable {
             case RIL_REQUEST_IMS_SEND_SMS: ret =  responseSMS(p); break;
             case RIL_REQUEST_SET_UICC_SUBSCRIPTION: ret = responseVoid(p); break;
             case RIL_REQUEST_SET_DATA_SUBSCRIPTION: ret = responseVoid(p); break;
-            /*case RIL_REQUEST_GET_UICC_SUBSCRIPTION: responseUiccSubscription(p); break;*/
             default:
                 throw new RuntimeException("Unrecognized solicited response: " + rr.mRequest);
             //break;
@@ -3899,10 +3900,29 @@ class RILReceiver implements Runnable {
 
     protected Object
     responseSignalStrength(Parcel p) {
-        // Assume this is gsm, but doesn't matter as ServiceStateTracker
-        // sets the proper value.
-        SignalStrength signalStrength = SignalStrength.makeSignalStrengthFromRilParcel(p);
-        return signalStrength;
+
+        int numInts = 12;
+        int signal[]=new int[numInts];
+        for (int i = 0; i < numInts; i++)
+            signal[i] = p.readInt();
+
+        // FIX Signal strength
+        signal[0] = signal[0] & 0xFF;
+        // FIX CDMA_SS.dbm
+        signal[2] = signal[2] % 256;
+        // FIX EVDO_SS.dbm
+        signal[4] = signal[4] % 256;
+        // FIX LTE
+        if(signal[7]==99){
+            signal[8] = SignalStrength.INVALID;
+            signal[9] = SignalStrength.INVALID;
+            signal[10] = SignalStrength.INVALID;
+            signal[11] = SignalStrength.INVALID;
+        } else {
+            signal[7] &= 0xff;
+        }
+
+        return new SignalStrength(signal[0], signal[1], signal[2], signal[3], signal[4], signal[5], signal[6], signal[7], signal[8], signal[9], signal[10], signal[11], (p.readInt() != 0));
     }
 
     protected ArrayList<CdmaInformationRecords>
@@ -4669,20 +4689,5 @@ class RILReceiver implements Runnable {
 
         send(rr);
     }
-
-    /*public void getUiccSubscription(int slotId, Message response){
-        RILRequest rr = RILRequest.obtain(RIL_REQUEST_GET_UICC_SUBSCRIPTION,response);
-        rr.mParcel.writeInt(slotId);
-        send(rr);
-    }
-
-    public Parcel responseUiccSubscription(Parcel p){
-        String response;
-
-        response = p.readString();
-        riljLog("RIL_JAVA || responseUiccSubscription: "+response);
-        return Parcel;
-
-    }*/
 
 }
