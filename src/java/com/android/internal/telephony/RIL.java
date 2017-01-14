@@ -2866,11 +2866,12 @@ public class RIL extends BaseCommands implements CommandsInterface {
             case RIL_UNSOL_EXIT_EMERGENCY_CALLBACK_MODE: ret = responseVoid(p); break;
             case RIL_UNSOL_RIL_CONNECTED: ret = responseInts(p); break;
             case RIL_UNSOL_VOICE_RADIO_TECH_CHANGED: ret =  responseInts(p); break;
-            case RIL_UNSOL_CELL_INFO_LIST: ret = responseCellInfoList(p); break;
+           // case RIL_UNSOL_CELL_INFO_LIST: ret = responseCellInfoList(p); break;
             case RIL_UNSOL_RESPONSE_IMS_NETWORK_STATE_CHANGED: ret =  responseVoid(p); break;
+            case RIL_UNSOL_DATA_NETWORK_STATE_CHANGED: ret = responseVoid(p); break;
             case RIL_UNSOL_ON_SS: ret =  responseSsData(p); break;
-            case RIL_UNSOL_STK_CC_ALPHA_NOTIFY: ret =  responseString(p); break;
-            case RIL_UNSOL_UICC_SUBSCRIPTION_STATUS_CHANGED: ret =  responseInts(p); break;
+            case RIL_UNSOL_STK_CC_ALPHA_NOTIFY: ret =  responseVoid(p); break;
+            case RIL_UNSOL_UICC_SUBSCRIPTION_STATUS_CHANGED: ret =  responseString(p); break;
 
             case RIL_UNSOL_STK_SEND_SMS_RESULT: ret = responseInts(p); break; // Samsung STK
 
@@ -3248,7 +3249,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
                 notifyRegistrantsRilConnectionChanged(((int[])ret)[0]);
                 break;
             }
-            case RIL_UNSOL_CELL_INFO_LIST: {
+           /* case RIL_UNSOL_CELL_INFO_LIST: {
                 if (RILJ_LOGD) unsljLogRet(response, ret);
 
                 if (mRilCellInfoListRegistrants != null) {
@@ -3256,7 +3257,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
                                         new AsyncResult (null, ret, null));
                 }
                 break;
-            }
+            }*/
 
             case RIL_UNSOL_ON_SS:
                 if (RILJ_LOGD) unsljLogRet(response, ret);
@@ -3619,8 +3620,8 @@ public class RIL extends BaseCommands implements CommandsInterface {
             dc.isMpty = (0 != p.readInt());
             dc.isMT = (0 != p.readInt());
             dc.als = p.readInt();
-            voiceSettings = p.readInt();
-            dc.isVoice = (0 == voiceSettings) ? false : true;
+            dc.isVoice = (0 != p.readInt());
+            boolean isVideo = (0 != p.readInt());
             dc.isVoicePrivacy = (0 != p.readInt());
             dc.number = p.readString();
             int np = p.readInt();
@@ -4253,7 +4254,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
             case RIL_UNSOL_EXIT_EMERGENCY_CALLBACK_MODE: return "UNSOL_EXIT_EMERGENCY_CALLBACK_MODE";
             case RIL_UNSOL_RIL_CONNECTED: return "UNSOL_RIL_CONNECTED";
             case RIL_UNSOL_VOICE_RADIO_TECH_CHANGED: return "UNSOL_VOICE_RADIO_TECH_CHANGED";
-            case RIL_UNSOL_CELL_INFO_LIST: return "UNSOL_CELL_INFO_LIST";
+           // case RIL_UNSOL_CELL_INFO_LIST: return "UNSOL_CELL_INFO_LIST";
             case RIL_UNSOL_RESPONSE_IMS_NETWORK_STATE_CHANGED:
                 return "UNSOL_RESPONSE_IMS_NETWORK_STATE_CHANGED";
             case RIL_UNSOL_ON_SS: return "UNSOL_ON_SS";
